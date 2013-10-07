@@ -1,13 +1,19 @@
 CouchIDE
 ========
 
-Drop this design doc into your database, instant webserver.
+1. Copy the design file `_design/couchide` to any CouchDB database and *BOOM*, instant webserver!
 
-*Current state*
+2. Well, it needs a bit of setup first, but hopefully this gets eliminated in the future.
 
-Nothing uploaded to github yet, sorry
+3. Go to `http://YOURSI.TE/DATABASENAME/_design/couchide/_rewrite/couchide/`
 
-Features
+4. Make a file called `index.html`
+
+5. Go to `http://YOURSI.TE/DATABASENAME/_design/couchide/_rewrite/` and view the site.
+
+Features:
+-------------
+- One design doc you drop into your database
 - HTML/JS/CSS code highlighting and advanced editor. Supports multiple cursors.
 - New file, save and delete
 - Open files from the sidebar
@@ -16,19 +22,31 @@ Features
 - Somewhat displays on mobile
 - Keybindings for the Ace editor are at 
   https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts
+- Loads file in address bar plus rewrites URL for bookmarks and navigation
+- Has new file snippets for fast development (html and json)
 
-Feature requests
+Where is the source WTF?
+-------------
+The file `editor.html` is actually a large part of the source, it has the editor (plus it loads some content from cdn) to edit your files. To upload this into a design document it is BASE64 encoded as an attachment in the `_design/couchide.json` file. So if you want to change the editor, edit `editor.html`, encode it into BASE64 and stick it where the BASE64 string is now in the design document.
+
+Feature requests:
+-------------
 - Change file name
-- Package in 1 design doc with router and editor for easy dropping
 - Authorisation
-- VHosts installation
+- VHosts installation and work from VHOSTS
 - Folder structure?
 - Works on mobile
-- Loads file from url
 
-Future Router
-/           =>    /index.html
-/x          =>    /x
-/couchide   =>    CouchIDE editor
-/couchide/* =>    Open file in CouchIDE editor
-/_ session  =>    ../../../_session
+Router
+-------------
+`/           =>    /index.html`
+
+`/*          =>    /*`
+
+`/couchide   =>    CouchIDE editor`
+
+`/couchide/* =>    Open file in CouchIDE editor`
+
+`/ _session   =>    ../../../ _session`
+
+`/api        =>    ../../../`

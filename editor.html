@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CouchIDE</title>
+  
+  <style>
+    
+    @import url(http://weloveiconfonts.com/api/?family=entypo);
+    @import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,600|Source+Code+Pro);
+    
+    
+    /* entypo */
+    [class*="entypo-"]:before {
+      font-family: 'entypo', sans-serif;
+      margin-right: 0.5em;
+    }
+    
+    h1, h2, h3, h4 {
+      font-weight: 400;
+      margin: 0;
+    }
+    
+    body {
+      font-family: "Source Sans Pro";
+      margin: 30px 320px 40px 0;
+      font-size: 14px;
+      background: hsla(0,0%,95%,1);
+    }
+    a {
+        color: #d4145a;
+        text-decoration: none;
+    }
+    input {
+      display: block;
+      width: 100%;
+      font-size: 14px;
+    }
+    textarea {
+      display: block;
+      width: 100%;
+      height: auto;
+      font-size: 16px;
+    }
+    .body textarea {
+      font-family: "Source Code Pro";
+      font-size: 13px;
+      padding: 1em;
+    
+      min-height: 400px;
+    }
+    
+    section.sidebar {
+      font-family: "Source Sans Pro";
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      position: fixed;
+      right: 0;
+      width: 300px;
+      bottom: 0;
+      top: 40px;
+      background: hsla(0,0%,90%,1);
+      padding: 20px;
+      height: 100%;
+      border-left: 1px solid hsla(0,0%,70%,1);
+    }
+    .sidebar ul {
+      padding: 0;
+    }
+    .sidebar li {
+      list-style: none;
+      padding: 0.5em 0;
+    }
+    .sidebar li:before {
+      font-family: 'entypo';
+      content: "\1F4C4";
+      margin-right: 0.5em;
+      color: #d4145a;
+    }
+    .sidebar li:hover:before {
+      content: "\270E";
+      opacity: 1;
+    }
+    a.newfile:before {
+      font-family: 'entypo';
+      content: "\229E";
+      margin-right: 0.5em;
+      color: #d4145a;
+      text-decoration: none;
+    }
+    
+    .topbar {
+      position: fixed;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: hsla(0,0%,20%,1);
+      color: white;
+      padding: 11px;
+    }
+    h1 {
+      display: inline;
+      padding: 0;
+      font-size: 14px;
+      margin: 0;
+      font-weight: 600;
+      margin-right: 30px;
+    }
+    h1 a:link, h1 a:visited {
+      color: white;
+    }
+    h2.filename {
+      display: inline;
+      padding: 0;
+      font-size: 14px;
+      margin: 0;
+      font-weight: 200;
+    }
+    h2.filename:before {
+      font-family: 'entypo';
+      content: "\270E";
+      margin-right: 0.5em;
+    }
+    
+    .modal {
+      position: absolute;
+      width: 400px;
+      left:50%;
+      top: 50%;
+      margin-left:-200px;
+      margin-top: -100px;
+      background: #eee;
+      z-index: 100;
+      padding: 40px;
+      text-align: center;
+      border-radius: 2px;
+      box-shadow: 0px 0px 10px hsla(0,0%,0%,0.3);
+      border: 1px solid hsla(0,0%,70%,1);
+    }
+    
+    .edit {
+      padding: 20px;
+      z-index: -100;
+    }
+    
+    .bottombar {
+      font-family: "Source Sans Pro";
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 300px;
+      background: hsla(0,0%,95%,1);
+      border-top: 1px solid hsla(0,0%,70%,1);
+      margin: 0;
+      padding: 10px;
+      height: 40px;
+    }
+    
+    button {
+      display: inline;
+      border: 1px solid hsla(0,0%,70%,1);
+      border-radius: 3px;
+      background: hsla(0,0%,100%,0);
+      font-family: "Source Sans Pro";
+      font-weight: 400;
+      font-size: 1em;
+      min-width: 100px;
+      text-align: left;
+      padding: 7px 20px 7px 10px;
+    }
+    button:hover {
+      background: hsla(0,0%,100%,0.7);
+    }
+    div.save {
+      float: right;
+      padding: 0px;
+    }
+    button.save {
+      color: hsla(148,100%,28%,1);
+      font-weight: 600;
+    }
+    button.delete {
+      font-weight: 400;
+    }
+    .delete button.yes {
+      color: hsla(355,84%,40%,1)
+    }
+    div.deleted {
+      float: left;
+      padding: 0px;
+    }
+    div.status {
+      color: hsla(0,0%,0%,1);
+      float: right;
+      display: block;
+      padding: 10px 10px 20px 10px;
+    }
+    div.status p {
+      font-weight: 400;
+      margin: 0;
+      padding: 0;
+    }
+    
+    [contenteditable], textarea, input {
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      border: 2px solid hsla(334,85%,52%,0.1);
+      /*margin: -5px -5px -5px -5px;*/
+      margin-top: -5px;
+      margin-right: -5px;
+      margin-left: -5px;
+      padding: 5px;
+      outline: none;
+    }
+    
+    [contenteditable]:hover, textarea:hover, input:hover {
+      border: 2px solid hsla(334,85%,52%,0.5);
+      outline: none;
+    }
+    
+    [contenteditable]:focus, textarea:focus, input:focus {
+      border: 2px solid hsla(334,85%,52%,1);
+      outline: none;
+    }
+    
+    section.editor {
+      position: absolute;
+      left: 0;
+      top: 40px;
+      bottom: 61px;
+      right: 280px;
+      z-index: -100;
+    }
+    #editor { 
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      right: 0;
+    }
+    
+    @media (max-width: 600px) {
+      body, .modal, .topbar, section.sidebar, section.editor, .bottombar {
+        display: block;
+        position: relative;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        width: 100%;
+        height: auto;
+        margin: 0;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+      }
+      section.editor {
+        z-index: 100;
+      }
+      .bottombar .deleted, .bottombar .delete, .bottombar .save, .bottombar div.status {
+        width: 100%;
+        text-align: center;
+        display: block;
+        float: none;
+      }
+    }
+    
+  </style>
+  
+  <meta name="viewport" content="initial-scale=1">
+
+</head>
+<body>
+  <section class="topbar">
+     <h1>
+        CouchIDE
+     </h1>
+     <h2 class="filename">
+         
+     </h2>
+  </section>
+      
+  <div class="modal newfile">
+    <p>What name should your file have?</p>
+    <input name="_id" class="field _id" placeholder="Filename">
+    <select class="field type">
+      <option value="text/plain">Plain text</option>
+      <option value="text/html">HTML</option>
+      <option value="text/css">CSS</option>
+      <option value="application/javascript">Javascript</option>
+      <option value="application/json">JSON</option>
+    </select>
+    <button type="button" class="newfile entypo-plus">Create file</button>
+    <button type="button" class="cancel">No, Cancel</button>
+  </div>    
+  
+  <div class="modal delete">
+    <p>Are you sure you wish to delete this file?</p>
+    <button type="button" class="yes entypo-erase">Yes, Delete</button>
+    <button type="button" class="cancel">No, Cancel</button>
+  </div>    
+
+  <section class="sidebar">
+    <h2>Files:</h2>
+    <ul class="files">
+      <li>No files</li>
+    </ul>
+    <a href="#/new" class="newfile">New file</a>
+  </section>
+  
+  <section class="bottombar">
+    <div class="save">
+        <button type="submit" class="save entypo-check">Save</button>
+    </div>
+    <div class="status"><p class="entypo-attention">Editor not loaded yet!</p></div>
+    <div class="deleted">
+      <button type="button" class="delete entypo-cancel-circled">Delete</button>
+    </div>
+  </section>
+
+  <section class="editor"><div id="editor">Please open a file!</div></section>
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.01/ace.js" type="text/javascript" charset="utf-8"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.2.1/moment.min.js" type="text/javascript" charset="utf-8"></script>
+
+  <script type="application/javascript">
+    
+    // Set Empty File
+
+    var emptyFile = {
+      body: "",
+      type: "text/plain",
+      _id: "",
+      _deleted: false,
+      editorLine: 0,
+      editorLastSaved: ""
+    };
+    var currentFile = emptyFile;
+    var editor;
+    
+    // Set name of rewrite rules
+    
+    var editorRewrite = '_rewrite/couchide/'
+    
+    // Get current URL
+    
+    var currentUrl = $(location).attr('href');
+    var currentFileParts = currentUrl.split(editorRewrite); //Use
+    var currentFileName = currentFileParts[currentFileParts.length - 1];
+    var currentDesignDoc = currentFileParts[0];
+    var currentFileParts = currentUrl.split('/'); //Reuse
+    var currentDatabase = currentFileParts[3];
+    var currentFileParts = ""; //Destroy
+    var currentEditorUrl = currentDesignDoc + editorRewrite;
+    
+    // Code to perform on document ready
+    
+    $( document ).ready(function() {
+      $('.modal').hide();
+      /* $('div.newfile').fadeIn();
+         $('div.status')
+           .html('<p class="entypo-attention">No file open!</p>')
+           .fadeTo( "slow" , 0.24 ); */
+      
+      
+      // Click handlers
+      
+      $(document).on('click', "ul.files li a", function() {
+        var load = $(this).data('file');
+        event.preventDefault();
+        console.log(
+        "click: " + load
+        );
+        loadFile(load);
+      });
+      $(document).on('click', "button.save", function() {
+        event.preventDefault();
+        saveFile();
+      });
+      $(document).on('click', "button.delete", function() {
+        event.preventDefault();
+        $('div.delete').fadeIn('fast');
+      });
+      $(document).on('click', "div.delete button.yes", function() {
+        event.preventDefault();
+        deleteFile();
+      });
+      $(document).on('click', "button.cancel", function() {
+        event.preventDefault();
+        fadeOutModal()
+      });
+      $(document).on('click', "button.newfile", function() {
+        event.preventDefault();
+        newFile();
+      });
+      $(document).on('click', "a.newfile", function() {
+        event.preventDefault();
+        $('div.newfile').fadeIn('fast');
+      });
+      
+      // Load files menu
+      
+      getFiles();
+      
+      // If a name is entered in the addressbar open that file
+      
+      if ( currentFileName != false ) {
+        loadFile(currentFileName);
+      } else {
+        loadFile('CouchIDE Welcome page');
+      }
+      
+    });
+    
+    // File manipulation functions
+    
+    function getFiles() {
+      return $.getJSON('/couch-ide/_design/ide/_view/type-doc', 
+        function(json, textStatus) {
+          // console.log(json);
+          $('ul.files').html('')
+          $.each(json.rows, function(index, val) {
+    
+            /* iterate through array or object */
+            $('ul.files')
+            .append(
+              '<li> <a href="'
+              + val.id
+              + '" data-file="'
+              + val.id
+              + '">'
+              + val.id
+              + '</a></li>'
+            )
+          }
+        );
+      });
+    }
+    
+    function loadFile(file) {
+      fadeOutModal()
+      return $.getJSON('/' + currentDatabase + '/' + file, 
+        function(json, textStatus) {
+          currentFile = {};
+          currentFile = json;
+          initEditor();
+          getFiles();
+          $('div.status')
+            .html(
+              '<p class="entypo-cloud">File last saved: ' 
+              + moment(currentFile.editorLastSaved).fromNow() 
+              + '</p>'
+            )
+            .fadeTo( "fast" , 0.33 )
+            .fadeTo( "slow" , 0.24 );
+            
+            window.history.pushState( {}, 'CouchIDE: ' + file , currentEditorUrl + file );
+        }
+      );
+    }
+    
+    function saveFile() {
+      if (currentFile._id != false) {
+        $('div.status')
+          .html('<p class="entypo-upload-cloud">Saving</p>')
+          .fadeTo( "fast" , 0.53 ).delay(2000);
+        currentFile.body = editor.getValue();
+        editorCursor = editor.selection.getCursor();
+        currentFile.editorLine = editorCursor.row;
+        currentFile.editorLastSaved = new Date().getTime();
+        console.log(
+          "save: " + currentFile._id
+        );
+        $.ajax({
+          type: "POST",
+          url: "/couch-ide/",
+          data: JSON.stringify(currentFile),
+          contentType : "application/json",
+          dataType : "json",
+          success: function ( data ) {
+            $('div.status').html('Saved');
+            // console.log("Saved!");
+            console.log(data);
+            // console.log(data._rev);
+            loadFile(currentFile._id);
+          },
+          fail: function ( response ) {
+            alert("Error! The message was not sent.");
+            console.log(data);
+          }
+        });
+      } else {
+        alert('Please create a new file first');
+      }
+    }
+    
+    function deleteFile() {
+      currentFile._deleted = true;
+      saveFile();
+      getFiles();
+      currentFile = emptyFile;
+      initEditor();
+      getFiles();
+    }
+    
+    function newFile() {
+      fadeOutModal()
+      currentFile = emptyFile;
+      currentFile._id = $('input.field._id').val();
+      currentFile.type = $('select.field.type').find(":selected").val();
+      
+      if (currentFile.type == "text/html") {
+        currentFile.body = '<!doctype html>\r\n <html lang="en">\r\n \t<head>\r\n \t\t<meta charset="UTF-8">\r\n \t\t<title>Document</title>\r\n \t</head>\r\n \t<body>\r\n \t\t\t\r\n \t</body>\r\n </html>\r\n';
+        currentFile.editorLine = 7;
+      } else if (currentFile.type == "application/javascript") {
+        currentFile.body = '';
+      } else if (currentFile.type == "text/css") {
+        currentFile.body = '';
+      } else if (currentFile.type == "text/plain") {
+        currentFile.body = '';
+      } else if (currentFile.type == "application/json") {
+        currentFile.body = '{\r\n\t\r\n}';
+        currentFile.editorLine = 1;
+      } else {
+        currentFile.body = '';
+      }
+      
+      initEditor();
+      saveFile();
+      getFiles();
+    }
+    
+    function fadeOutModal() {
+      $('.modal').fadeOut('fast');
+    }
+    
+    // Initialisation functions
+    
+    function initEditor() {
+      console.log(currentFile);
+      editor = ace.edit("editor");
+      editor.resize()
+      editor.setTheme("ace/theme/solarized_dark");
+      if (currentFile.type == "text/html") {
+        editor.getSession().setMode("ace/mode/html");
+        console.log("html");
+      } else if (currentFile.type == "application/javascript") {
+        editor.getSession().setMode("ace/mode/javascript");
+        console.log("javascript");
+      } else if (currentFile.type == "text/css") {
+        editor.getSession().setMode("ace/mode/css");
+        console.log("css");
+      } else if (currentFile.type == "text/plain") {
+        editor.getSession().setMode("ace/mode/text");
+        console.log("plaintext");
+      } else if (currentFile.type == "application/json") {
+        editor.getSession().setMode("ace/mode/json");
+        console.log("json");
+      } else {
+        editor.getSession().setMode("ace/mode/plain");
+        console.log("nothing");
+      }
+      editor.setValue(currentFile.body);
+      
+      editor.getSession().setUseSoftTabs(true);
+      editor.getSession().setTabSize(2);
+      editor.getSession().setUseWrapMode(true);
+      
+      editor.gotoLine(currentFile.editorLine + 1);
+      $('h2.filename').html(currentFile._id);
+    }
+    
+  </script>
+    
+</body>
+</html>
