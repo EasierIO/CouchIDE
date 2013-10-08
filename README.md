@@ -1,5 +1,6 @@
 CouchIDE
 ========
+Version `0.2`
 
 1. Copy the design file `_design/couchide` to any CouchDB database and *BOOM*, instant webserver!
 
@@ -10,6 +11,8 @@ CouchIDE
 4. Make a file called `index.html`
 
 5. Go to `http://YOURSI.TE/DATABASENAME/_design/couchide/_rewrite/` and view the site.
+
+You can always return to CouchIDE to edit your files.
 
 Features:
 -------------

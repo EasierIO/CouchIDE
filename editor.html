@@ -275,7 +275,7 @@
 <body>
   <section class="topbar">
      <h1>
-        CouchIDE
+        CouchIDE 0.2
      </h1>
      <h2 class="filename">
          
@@ -338,24 +338,38 @@
       editorLine: 0,
       editorLastSaved: ""
     };
-    var currentFile = emptyFile;
     var editor;
     
-    // Set name of rewrite rules
+    var getSettings = function () {
+      
+      var settings = {};
+      var currentUrl = $(location).attr('href');
+      var partsOfUrl = getURLParts();
+      
+      settings.currentUrl = currentUrl;
+      settings.siteUrl = partsOfUrl[2];
+      settings.urlFile = partsOfUrl[partsOfUrl.length - 1];
+      
+      settings.onVhost = isVhost();
+      settings.dbPath = isVhost() ? "api" : partsOfUrl[3];
+      
+      settings.editorRewrite = '_rewrite/couchide/';
+      
+      return settings;
+    }
+  
+    var settings = function() {
+      return getSettings();
+    }
     
-    var editorRewrite = '_rewrite/couchide/'
+    var isVhost = function() {
+      return getURLParts().indexOf('_rewrite') === -1;
+    }
     
-    // Get current URL
-    
-    var currentUrl = $(location).attr('href');
-    var currentFileParts = currentUrl.split(editorRewrite); //Use
-    var currentFileName = currentFileParts[currentFileParts.length - 1];
-    var currentDesignDoc = currentFileParts[0];
-    var currentFileParts = currentUrl.split('/'); //Reuse
-    var currentDatabase = currentFileParts[3];
-    var currentFileParts = ""; //Destroy
-    var currentEditorUrl = currentDesignDoc + editorRewrite;
-    
+    var getURLParts = function() {
+      return $(location).attr('href').split("/");
+    }
+  
     // Code to perform on document ready
     
     $( document ).ready(function() {
@@ -407,10 +421,12 @@
       
       // If a name is entered in the addressbar open that file
       
-      if ( currentFileName != false ) {
-        loadFile(currentFileName);
+      if ( settings().urlFile != false ) {
+        loadFile(settings().urlFile);
+      } else if (settings().urlFile == 'couchide') {
+        loadFile('index.html');
       } else {
-        loadFile('CouchIDE Welcome page');
+        loadFile('index.html');
       }
       
     });
@@ -418,7 +434,7 @@
     // File manipulation functions
     
     function getFiles() {
-      return $.getJSON('/couch-ide/_design/ide/_view/type-doc', 
+      return $.getJSON('/' + settings().dbPath + '/_design/ide/_view/type-doc', 
         function(json, textStatus) {
           // console.log(json);
           $('ul.files').html('')
@@ -442,7 +458,7 @@
     
     function loadFile(file) {
       fadeOutModal()
-      return $.getJSON('/' + currentDatabase + '/' + file, 
+      return $.getJSON('/' + settings().dbPath + '/' + file, 
         function(json, textStatus) {
           currentFile = {};
           currentFile = json;
@@ -454,10 +470,10 @@
               + moment(currentFile.editorLastSaved).fromNow() 
               + '</p>'
             )
-            .fadeTo( "fast" , 0.33 )
-            .fadeTo( "slow" , 0.24 );
+            .fadeTo( 'fast' , 0.33 )
+            .fadeTo( 'slow' , 0.24 );
             
-            window.history.pushState( {}, 'CouchIDE: ' + file , currentEditorUrl + file );
+            window.history.pushState( {}, 'CouchIDE: ' + file , file );
         }
       );
     }
@@ -466,20 +482,20 @@
       if (currentFile._id != false) {
         $('div.status')
           .html('<p class="entypo-upload-cloud">Saving</p>')
-          .fadeTo( "fast" , 0.53 ).delay(2000);
+          .fadeTo( 'fast' , 0.53 ).delay(2000);
         currentFile.body = editor.getValue();
         editorCursor = editor.selection.getCursor();
         currentFile.editorLine = editorCursor.row;
         currentFile.editorLastSaved = new Date().getTime();
         console.log(
-          "save: " + currentFile._id
+          'save: ' + currentFile._id
         );
         $.ajax({
-          type: "POST",
-          url: "/couch-ide/",
+          type: 'POST',
+          url: '/' + settings().dbPath + '/' + settings().urlFile,
           data: JSON.stringify(currentFile),
-          contentType : "application/json",
-          dataType : "json",
+          contentType : 'application/json',
+          dataType : 'json',
           success: function ( data ) {
             $('div.status').html('Saved');
             // console.log("Saved!");
@@ -488,7 +504,7 @@
             loadFile(currentFile._id);
           },
           fail: function ( response ) {
-            alert("Error! The message was not sent.");
+            alert('Error! The message was not sent.');
             console.log(data);
           }
         });
