@@ -434,7 +434,7 @@
     // File manipulation functions
     
     function getFiles() {
-      return $.getJSON('/' + settings().dbPath + '/_design/ide/_view/type-doc', 
+      return $.getJSON('/'+ settings().dbPath +  '/_design/ide/_view/type-doc', // PROBLEMS ON VHOST
         function(json, textStatus) {
           // console.log(json);
           $('ul.files').html('')
@@ -492,7 +492,7 @@
         );
         $.ajax({
           type: 'POST',
-          url: '/' + settings().dbPath + '/' + settings().urlFile,
+          url: '/' + settings().dbPath + '/',
           data: JSON.stringify(currentFile),
           contentType : 'application/json',
           dataType : 'json',

@@ -1,6 +1,6 @@
 CouchIDE
 ========
-Version `0.2`
+Version `0.2.1`
 
 1. Copy the design file `_design/couchide` to any CouchDB database and *BOOM*, instant webserver!
 
