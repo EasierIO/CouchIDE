@@ -275,7 +275,7 @@
 <body>
   <section class="topbar">
      <h1>
-        CouchIDE 0.2
+        CouchIDE 0.3
      </h1>
      <h2 class="filename">
          
@@ -351,7 +351,7 @@
       settings.urlFile = partsOfUrl[partsOfUrl.length - 1];
       
       settings.onVhost = isVhost();
-      settings.dbPath = isVhost() ? "api" : partsOfUrl[3];
+      settings.dbPath = isVhost() ? "db" : partsOfUrl[3];
       
       settings.editorRewrite = '_rewrite/couchide/';
       
@@ -434,7 +434,7 @@
     // File manipulation functions
     
     function getFiles() {
-      return $.getJSON('/'+ settings().dbPath +  '/_design/ide/_view/type-doc', // PROBLEMS ON VHOST
+      return $.getJSON('/'+ settings().dbPath +  '/_design/couchide/_view/type-doc',
         function(json, textStatus) {
           // console.log(json);
           $('ul.files').html('')
