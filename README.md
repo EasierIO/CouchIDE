@@ -1,6 +1,8 @@
 CouchIDE
 ========
-Version `0.3`
+Version `0.4`
+
+*Does not work unless you have the lib database!*
 
 1. Copy the design file `_design/couchide` to any CouchDB database and *BOOM*, instant webserver!
 
@@ -36,7 +38,7 @@ Feature requests:
 -------------
 - Change file name
 - Authorisation
-- VHosts installation and work from VHOSTS
+- VHosts installation
 - Folder structure?
 - Works on mobile
 
@@ -52,4 +54,8 @@ Router
 
 `/ _session   =>    ../../../ _session`
 
-`/api        =>    ../../../`
+`/api/*      =>    ../../../*`
+
+`/lib/*      =>    ../../../libraries/*`
+
+`/db/*       =>    ../../*`

@@ -4,16 +4,20 @@
   <meta charset="utf-8">
   <title>CouchIDE</title>
   
+
+  
   <style>
-    
-    @import url(http://weloveiconfonts.com/api/?family=entypo);
-    @import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,600|Source+Code+Pro);
-    
-    
-    /* entypo */
-    [class*="entypo-"]:before {
-      font-family: 'entypo', sans-serif;
-      margin-right: 0.5em;
+  
+    @charset 'UTF-8';
+    @font-face {
+      font-family: 'entypo';
+      font-style: 'normal';
+      font-weight: 'normal';
+      src: url('../lib/entypo/entypo.eot');
+      src: url('../lib/entypo/entypo.eot?#iefix') format('eot'), 
+      url('../lib/entypo/entypo.woff') format('woff'), 
+      url('../lib/entypo/entypo.ttf') format('truetype'), 
+      url('../lib/entypo/entypo.svg#entypo') format('svg');
     }
     
     h1, h2, h3, h4 {
@@ -26,6 +30,10 @@
       margin: 30px 320px 40px 0;
       font-size: 14px;
       background: hsla(0,0%,95%,1);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
     }
     a {
         color: #d4145a;
@@ -75,6 +83,7 @@
       font-family: 'entypo';
       content: "\1F4C4";
       margin-right: 0.5em;
+      font-size:2em;
       color: #d4145a;
     }
     .sidebar li:hover:before {
@@ -83,6 +92,7 @@
     }
     a.newfile:before {
       font-family: 'entypo';
+      font-size:2em;
       content: "\229E";
       margin-right: 0.5em;
       color: #d4145a;
@@ -101,28 +111,36 @@
       color: white;
       padding: 11px;
     }
-    h1 {
+    h1.logo {
+      display: inline;
+      padding: 0;
+      font-size: 14px;
+      margin: 0;
+      font-weight: 400;
+    }
+    h1.logo .nine {
+      font-weight: 900 !important;
+    }
+    h1.logo .two {
+      font-weight: 200 !important;
+    }
+    .topbar h1 a:link, .topbar h1 a:visited {
+      color: white;
+    }
+    .topbar h2.filename {
       display: inline;
       padding: 0;
       font-size: 14px;
       margin: 0;
       font-weight: 600;
-      margin-right: 30px;
+      margin-left: 30px;
     }
-    h1 a:link, h1 a:visited {
-      color: white;
-    }
-    h2.filename {
-      display: inline;
-      padding: 0;
-      font-size: 14px;
-      margin: 0;
-      font-weight: 200;
-    }
-    h2.filename:before {
+    .topbar h2.filename:before {
       font-family: 'entypo';
       content: "\270E";
+      font-size:2em;
       margin-right: 0.5em;
+      line-height: 0.1;
     }
     
     .modal {
@@ -139,6 +157,11 @@
       border-radius: 2px;
       box-shadow: 0px 0px 10px hsla(0,0%,0%,0.3);
       border: 1px solid hsla(0,0%,70%,1);
+      display: none;
+    }
+    
+    .notloaded {
+      padding: 4em;
     }
     
     .edit {
@@ -185,6 +208,7 @@
     button.delete {
       font-weight: 400;
     }
+    
     .delete button.yes {
       color: hsla(355,84%,40%,1)
     }
@@ -203,6 +227,25 @@
       margin: 0;
       padding: 0;
     }
+    
+    .status .file-last-saved:before, .status .saving:before, .status .editor-not-loading:before, .delete button.yes:before, .bottombar button.save:before, .bottombar button.delete:before, a.newfile:before, button.delete:before {
+      font-size:2em;
+      font-family:entypo;
+      margin-right: 0.5em;
+      line-height:0.7;
+      float: left;
+    }
+    
+    button.delete:before {content:"\2716"}
+    
+    .status .file-last-saved:before {content:"\2601";}
+    .status .saving:before {content:"\e711";}
+    .status .editor-not-loading:before{content:"\232b";}
+    
+    .bottombar button.save:before{content:"\2713";}
+    .bottombar button.delete:before{content:"\2716";}
+    
+    a.newfile:before{content:"\2795";}
     
     [contenteditable], textarea, input {
       box-sizing: border-box;
@@ -242,6 +285,10 @@
       right: 0;
     }
     
+    .ace_text-layer {
+      color: inherit !important;
+    }
+    
     @media (max-width: 600px) {
       body, .modal, .topbar, section.sidebar, section.editor, .bottombar {
         display: block;
@@ -258,12 +305,32 @@
       }
       section.editor {
         z-index: 100;
+        min-height: 100000px;
       }
-      .bottombar .deleted, .bottombar .delete, .bottombar .save, .bottombar div.status {
-        width: 100%;
+      .bottombar div {
+      }
+      .bottombar button {
+        padding-right: 4px;
+        padding-left: 4px;
+        min-width: 0;
+        height: 40px;
+        margin:0;
+        border: none;
+      }
+      .bottombar .status {
         text-align: center;
-        display: block;
-        float: none;
+      }
+      .bottombar {
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        max-height: 40px;
+        background: ;
+        background: hsla(0,0%,95%,1);
+        overflow: hidden;
+        padding: 0;
       }
     }
     
@@ -274,12 +341,8 @@
 </head>
 <body>
   <section class="topbar">
-     <h1>
-        CouchIDE 0.3
-     </h1>
-     <h2 class="filename">
-         
-     </h2>
+    <h1 class="logo"><span class="nine">COUCH</span><span class="two">IDE</span> 0.4</h1>
+    <h2 class="filename">Bam! Webserver.</h2>
   </section>
       
   <div class="modal newfile">
@@ -291,40 +354,43 @@
       <option value="text/css">CSS</option>
       <option value="application/javascript">Javascript</option>
       <option value="application/json">JSON</option>
+      <option value="text/x-markdown">Markdown</option>
+      <option value="text/x-handlebars-template">Handlebars</option>
     </select>
-    <button type="button" class="newfile entypo-plus">Create file</button>
+    <button type="button" class="newfile">Create file</button>
     <button type="button" class="cancel">No, Cancel</button>
   </div>    
   
   <div class="modal delete">
     <p>Are you sure you wish to delete this file?</p>
-    <button type="button" class="yes entypo-erase">Yes, Delete</button>
+    <button type="button" class="yes">Yes, Delete</button>
     <button type="button" class="cancel">No, Cancel</button>
   </div>    
 
   <section class="sidebar">
     <h2>Files:</h2>
     <ul class="files">
-      <li>No files</li>
+      <li>No files yet!</li>
     </ul>
     <a href="#/new" class="newfile">New file</a>
   </section>
   
   <section class="bottombar">
     <div class="save">
-        <button type="submit" class="save entypo-check">Save</button>
+        <button type="submit" class="save">Save</button>
     </div>
-    <div class="status"><p class="entypo-attention">Editor not loaded yet!</p></div>
-    <div class="deleted">
-      <button type="button" class="delete entypo-cancel-circled">Delete</button>
+    <div class="status"><p class="alert editor-not-loaded">Editor not loaded yet!</p></div>
+    <div class="delete">
+      <button type="button" class="delete">Delete</button>
     </div>
   </section>
 
-  <section class="editor"><div id="editor">Please open a file!</div></section>
+  <section class="editor"><div id="editor"><section class="notloaded">Please open a file or <a href="#/new" class="newfile">create a new file</a> and start editing! If no file is specified the rewrite will try to load 'index.html' If you need any more help it can be found on <a href="https://github.com/vhv/CouchIDE">GitHub</a>.</section></div></section>
   
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js" type="text/javascript" charset="utf-8"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.01/ace.js" type="text/javascript" charset="utf-8"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.2.1/moment.min.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../lib/jquery/jquery.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+  <!--http://server.easier.io/libraries/pouchdb-min/pouchdb.js-->
+  <script src="../lib/moment/moment.js" type="text/javascript" charset="utf-8"></script>
 
   <script type="application/javascript">
     
@@ -374,11 +440,6 @@
     
     $( document ).ready(function() {
       $('.modal').hide();
-      /* $('div.newfile').fadeIn();
-         $('div.status')
-           .html('<p class="entypo-attention">No file open!</p>')
-           .fadeTo( "slow" , 0.24 ); */
-      
       
       // Click handlers
       
@@ -396,6 +457,7 @@
       });
       $(document).on('click', "button.delete", function() {
         event.preventDefault();
+        $('section.editor').css( '-webkit-filter', 'blur(0.2px) grayscale(0.5)' );
         $('div.delete').fadeIn('fast');
       });
       $(document).on('click', "div.delete button.yes", function() {
@@ -412,6 +474,7 @@
       });
       $(document).on('click', "a.newfile", function() {
         event.preventDefault();
+        $('section.editor').css('-webkit-filter', 'blur(0.2px) grayscale(0.5)');
         $('div.newfile').fadeIn('fast');
       });
       
@@ -457,7 +520,7 @@
     }
     
     function loadFile(file) {
-      fadeOutModal()
+      fadeOutModal();
       return $.getJSON('/' + settings().dbPath + '/' + file, 
         function(json, textStatus) {
           currentFile = {};
@@ -466,7 +529,7 @@
           getFiles();
           $('div.status')
             .html(
-              '<p class="entypo-cloud">File last saved: ' 
+              '<p class="file-last-saved">File last saved: ' 
               + moment(currentFile.editorLastSaved).fromNow() 
               + '</p>'
             )
@@ -481,7 +544,7 @@
     function saveFile() {
       if (currentFile._id != false) {
         $('div.status')
-          .html('<p class="entypo-upload-cloud">Saving</p>')
+          .html('<p class="saving">Saving</p>')
           .fadeTo( 'fast' , 0.53 ).delay(2000);
         currentFile.body = editor.getValue();
         editorCursor = editor.selection.getCursor();
@@ -496,16 +559,20 @@
           data: JSON.stringify(currentFile),
           contentType : 'application/json',
           dataType : 'json',
-          success: function ( data ) {
-            $('div.status').html('Saved');
-            // console.log("Saved!");
-            console.log(data);
-            // console.log(data._rev);
-            loadFile(currentFile._id);
-          },
-          fail: function ( response ) {
-            alert('Error! The message was not sent.');
-            console.log(data);
+          statusCode: {
+            409: function(data) {
+              alert('Document update conflict! The file has probably also been edited somewhere else!');
+              console.log("409! " + JSON.stringify(data) );
+            },
+            404: function(data) {
+              alert('File not found!');
+              console.log("404! " + JSON.stringify(data));
+            },
+            201: function(data) {
+              $('div.status').html('Saved');
+              console.log("Saved! " + JSON.stringify(data));
+              loadFile(currentFile._id);
+            }
           }
         });
       } else {
@@ -520,6 +587,7 @@
       currentFile = emptyFile;
       initEditor();
       getFiles();
+      fadeOutModal();
     }
     
     function newFile() {
@@ -551,33 +619,32 @@
     
     function fadeOutModal() {
       $('.modal').fadeOut('fast');
+      $('section.editor').css('-webkit-filter', 'none');
     }
     
     // Initialisation functions
     
     function initEditor() {
-      console.log(currentFile);
+      console.log("Loaded: " + JSON.stringify(currentFile));
       editor = ace.edit("editor");
       editor.resize()
       editor.setTheme("ace/theme/solarized_dark");
       if (currentFile.type == "text/html") {
         editor.getSession().setMode("ace/mode/html");
-        console.log("html");
       } else if (currentFile.type == "application/javascript") {
         editor.getSession().setMode("ace/mode/javascript");
-        console.log("javascript");
       } else if (currentFile.type == "text/css") {
         editor.getSession().setMode("ace/mode/css");
-        console.log("css");
       } else if (currentFile.type == "text/plain") {
         editor.getSession().setMode("ace/mode/text");
-        console.log("plaintext");
       } else if (currentFile.type == "application/json") {
         editor.getSession().setMode("ace/mode/json");
-        console.log("json");
+      } else if (currentFile.type == "text/x-markdown") {
+        editor.getSession().setMode("ace/mode/markdown");
+      } else if (currentFile.type == "text/x-handlebars-template") {
+        editor.getSession().setMode("ace/mode/handlebars");
       } else {
         editor.getSession().setMode("ace/mode/plain");
-        console.log("nothing");
       }
       editor.setValue(currentFile.body);
       
