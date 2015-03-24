@@ -1,76 +1,43 @@
 CouchIDE
 ========
-Version `0.5`
+Version `0.6 Alpha`
 
-1. Copy the design file `_design/couchide` to any CouchDB database and *BOOM*, instant webserver!
+Install
+-------
+*this is still blue skies*
 
-2. Well, it needs a bit of setup first, but hopefully this gets eliminated in the future.
+1. Go to [couchide.easier.io/install-on-my-own-server](http://couchide.easier.io/install-on-my-own-server)
 
-3. Go to `http://YOURSI.TE/DATABASENAME/_design/couchide/_rewrite/couchide/`
+2. Enter the server where you want to install CouchIDE
 
-4. Make a file called `index.html`
+3. Authenticate with your username and password and press install
 
-5. Go to `http://YOURSI.TE/DATABASENAME/_design/couchide/_rewrite/` and view the site.
+4. Go to the URL of the database you installed
+
+5. Enter the editor by going to `*/_ide/` and set up the URL to visit your site on.
 
 You can always return to CouchIDE to edit your files.
 
-Features:
--------------
-- One design doc you drop into your database
-- HTML/JS/CSS code highlighting and advanced editor. Supports multiple cursors.
-- New file, save and delete
-- Open files from the sidebar
-- Remembers the line number on save making editing easier
-- Tells you when your file was last saved
-- Keybindings for the Ace editor are at 
-  https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts
-- Loads file in address bar plus rewrites URL for bookmarks and navigation
-- Has new file snippets for fast development (html and json)
-- Save with Command-S (mac) or Ctrl-S (windows)
+Build from source
+-----------------
+*nothing here*
 
-Where is the source WTF?
--------------
-The file `editor.html` is actually a large part of the source, it has the editor
-(plus it loads some content from cdn) to edit your files. To upload this into a 
-design document it is BASE64 encoded as an attachment in the 
-`_design/couchide.json` file. So if you want to change the editor, edit 
-`editor.html`, encode it into BASE64 and stick it where the BASE64 string is now
-in the design document.
+Features
+--------
+*none*
 
-How do I set up CouchIDE for Offline editing
--------------
-Create a database named 'libraries' and put attach the nessecary scripts to
-documents there, for naming check the source. In the future I plan to offer a
-libraries database for replication but I have not had the time yet.
-
-I see 404's loading the scripts, yet the editor loads fine...
--------------
-CouchIDE first looks for the javascript dependencies in the database `libraries`
-and tries to load the scripts from there, if impossible because there is no 
-libraries database it says 'screw it' and loads versions of an CDN.
-
-Feature requests:
--------------
-- Change file name
-- Authorisation
-- VHosts installation
-- Folder structure?
-- Works on mobile
+Backlog
+-------
+The Backlog and Roadmap for CouchIDE can be found at [The issue tracker or the HuBoard](https://huboard.com/EasierIO/CouchIDE/#/)
 
 Router
--------------
-`/           =>    /index.html`
-
-`/*          =>    /*`
-
-`/couchide   =>    CouchIDE editor`
-
-`/couchide/* =>    Open file in CouchIDE editor`
-
-`/ _session   =>    ../../../ _session`
-
-`/api/*      =>    ../../../*`
-
-`/lib/*      =>    ../../../libraries/*`
-
-`/db/*       =>    ../../*`
+------
+| From | Where
+|-|
+| `/` | Opens up the `index.html` file (or the home file you specify in the editor)
+| `/_files/*filename*` | Opens up a file by it's name you can specify in the editor.
+| `/_ide` | Open up the editor.
+| `/_session` | The session endpoint.
+| `/_api` | The endpoint for the API
+| `/_lib/*packagename*/*versionname*/*` | Packages installed and managed
+| `/_db` | The endpoint for the database
