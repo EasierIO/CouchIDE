@@ -33,7 +33,7 @@ The Backlog and Roadmap for CouchIDE can be found at [The issue tracker or the H
 Router
 ------
 | From | Where
-|-|
+| --- | ---
 | `/` | Opens up the `index.html` file (or the home file you specify in the editor)
 | `/_files/*filename*` | Opens up a file by it's name you can specify in the editor.
 | `/_ide` | Open up the editor.
