@@ -4,7 +4,7 @@ Version `0.6 Alpha`
 
 Install
 -------
-*this is still blue skies*
+*this is still blue skies and as there is nothing there yet is for now just a dream, or a lie*
 
 1. Go to [couchide.easier.io/install-on-my-own-server](http://couchide.easier.io/install-on-my-own-server)
 
