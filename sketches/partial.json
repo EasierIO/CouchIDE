@@ -1,0 +1,8 @@
+{
+    "_id": "HASH",
+    "_rev": "REV-HASH",
+    "_type": "partial",
+    "language": "html",
+    "require": ["PARTIAL-ID", "PARTIAL-ID"],
+    "body": "<html><?PARTIAL-ID?/></html>"
+}
